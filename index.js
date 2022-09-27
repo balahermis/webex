@@ -27,4 +27,4 @@ function log(type, data) {
     var payload = document.createTextNode(`${type}: ${JSON.stringify(data)}`);
     li.appendChild(payload)
     ul.prepend(li);
-}
+} 
