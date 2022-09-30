@@ -27,7 +27,7 @@ if (!redirectURI) {
    }
    else {
       // defaults to localhost
-      redirectURI = `http://localhost:${port}/oauth`;
+      redirectURI = `https://d1a2-103-8-116-202.ngrok.io/oauth`;
    }
 }
 debug(`OAuth integration settings:\n   - CLIENT_ID    : ${clientId}\n   - REDIRECT_URI : ${redirectURI}\n   - SCOPES       : ${scopes}`);
