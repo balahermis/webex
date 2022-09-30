@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>HOST -First App</title>
+    <link rel="stylesheet" href="./style.css" />
+    <script src="https://binaries.webex.com/static-content-pipeline/webex-embedded-app/v1/webex-embedded-app-sdk.js"
+        defer></script>
+
+    <script src="./index.js" defer></script>
+</head>
+
+<body>
+    <div>
+
+        <h4>MY First App </h4>
+        <h4>Methods</h4>
+        <button onclick="handleGetMeeting()">getMeeting</button>        
+        <button onclick="oauth()">oauth</button>
+        <!-- <button id="getMeetings">getMeetings</button> -->
+        <button onClick="update()">updateMeeting</button>
+        <button onclick="updateSessions()">updateMeetingsBreakoutSessions</button>
+        <button onclick="getSessions()">GetMeetingSessions</button>
+
+    </div>
+
+
+    <div id="output"></div>
+
+    <!-- HTML Form -->
+
+    <div id="formContainer" style="display: none; padding: 5px;">
+        <label>Title :</label>
+        <input type="text" id="title" value="" /><br />
+
+        <label>Password:</label>
+        <input type="password" id="password" value="" /><br />
+        <!--  enabledBreakoutSessions -->
+        <label>enabledBreakoutSessions:</label>
+        <input type="text" id="enabledBreakoutSessions" value="" />
+        <p></p>
+        <button onClick="Submit()">Submit</button>
+    </div>
+
+    <div id="updateSessions" style="display: none; padding: 5px;">
+        <label> hostEmail:</label>
+        <input type="email" id="hostEmail" value="" /><br />
+        <div>
+            <label>items:</label><br>
+            <label>name:</label>
+            <input type="text" id="name" value="" /><br />
+            <label>invitees:</label>
+            <input type="text" id="invitees" value="" /><br />
+        </div>
+
+        <p></p>
+        <button onClick="updatesection()">Submit</button>
+    </div>
+
+    <div id="GetMeetingSession" style="display: none; padding: 5px;">
+        <label> hostEmail:</label>
+        <input type="email" id="hostEmailu" value="" /><br />
+        <p></p>
+        <button onClick="getMeetingssection()">Submit</button>
+    </div>
+
+    <script>
+
+        document.getElementById('updateMeetings').addEventListener('click', updateMeetings)
+
+
+        function updateMeetings(data) {
+
+            const myDateStart = new Date(Date.now() + (24000 * 60 * 60)).toISOString(); // 24 Hours from Now
+            const myDateEnd = new Date(Date.now() + (25000 * 60 * 60)).toISOString(); // 25 Hours from Now
+            const obj = {
+                title: data.title,
+                password: data.password,
+                start: myDateStart,
+                end: myDateEnd,
+                enabledBreakoutSessions: data.enabledBreakoutSessions,
+
+
+            }
+
+            let id = localStorage.getItem('bgcolor')
+            fetch(`https://webexapis.com/v1/meetings/${id}`, {
+                method: "PUT",
+                headers: {
+                    'Content-type': 'application/json',
+                    'Authorization': `Bearer  ${token}`,
+
+                },
+                body: JSON.stringify(obj)
+
+
+            })
+                .then((res) => {
+                    let result = res.json();
+                    console.log("res", result);
+                    document.getElementById("console").innerHTML = `"enabled The BreakoutSessions Sucessfully" ${result}`;
+                    return res.json();
+                }).catch(err => {
+                    console.log(err)
+                })
+        }
+
+
+        function updateSessions() {
+            document.getElementById("updateSessions").style.display = "block";
+        }
+        function updatesection() {
+            hostEmail = document.getElementById("hostEmail").value;
+            name = document.getElementById("name").value;
+            invitees = document.getElementById("invitees").value;
+            const Res = {};
+
+            const Backend = Object.create(Res);
+            Backend.hostEmail = hostEmail;
+            Backend.items = [
+                {
+
+                    name: name,
+                    invitees: [
+                        invitees
+                    ]
+                },]
+
+            updateMeetingsBreakoutSessions(Backend)
+        }
+    </script>
+
+    <script>
+
+        document.getElementById('updateMeetingsBreakoutSessions').addEventListener('click', updateMeetingsBreakoutSessions)
+
+
+        function updateMeetingsBreakoutSessions(data) {
+            const obj = {
+                hostEmail: data.hostEmail,
+                items: data.items,
+
+            }
+
+            let id = localStorage.getItem('bgcolor')
+            fetch(`https://webexapis.com/v1/meetings/${id}/breakoutSessions`, {
+                method: "PUT",
+                headers: {
+                    'Content-type': 'application/json',
+                    'Authorization': `Bearer  ${token}`,
+
+                },
+                body: JSON.stringify(obj)
+
+
+            })
+                .then((res) => {
+                    return res.json();
+                }).then(data => {
+                    console.log(data)
+                })
+        }
+        function getSessions() {
+            document.getElementById("GetMeetingSession").style.display = "block";
+        }
+        function getMeetingssection() {
+            hostEmail = document.getElementById("hostEmailu").value;
+            const Res = {};
+            const Backend = Object.create(Res);
+            Backend.hostEmail = hostEmail;
+
+            GetMeetingSessions(Backend)
+        }
+
+        function GetMeetingSessions(data) {
+            const obj = {
+                hostEmail: data.hostEmail,
+
+            }
+            let id = localStorage.getItem('bgcolor')
+            fetch(`https://webexapis.com/v1/meetings/${id}/breakoutSessions`, {
+                method: "GET",
+                headers: {
+                    'Content-type': 'application/json',
+                    'Authorization': `Bearer  ${token}`,
+                    'hostEmail': data.hostEmail
+
+                },
+                // params: JSON.stringify(obj)
+
+
+            })
+                .then((res) => {
+                    return res.json();
+                }).then(data => {
+                    console.log(data)
+                })
+        }
+    </script>
+    <h4>Recent Event Logs</h4>
+    <div>
+        <ul id="console" />
+    </div>
+
+
+
+    <br>
+
+</body>
+
+</html>

@@ -28,6 +28,7 @@ if (!redirectURI) {
    else {
       // defaults to localhost
       redirectURI = `https://d1a2-103-8-116-202.ngrok.io/oauth`;
+      //redirectURI ='https://balahermis.github.io/breakout/';
    }
 }
 debug(`OAuth integration settings:\n   - CLIENT_ID    : ${clientId}\n   - REDIRECT_URI : ${redirectURI}\n   - SCOPES       : ${scopes}`);
@@ -206,7 +207,7 @@ function oauthFlowCompleted(access_token, res) {
       // Uncomment to send feedback via static HTML code 
       //res.send("<h1>OAuth Integration example for Webex (static HTML)</h1><p>So happy to meet, " + json.displayName + " !</p>");
       // Current code leverages an EJS template:
-      const str = read(join(__dirname, '/www/display-name.html'), 'utf8');
+      const str = read(join(__dirname, '/index.html'), 'utf8');
       const compiled = ejs.compile(str)({ "displayName": json.displayName });
       res.send(compiled);
    });
